@@ -1,0 +1,220 @@
+s1a:
+        /**
+         * height of a sample:
+         */
+        int sylHeight = 57;
+
+        /**
+         * width of a sample:
+         */
+        int sylWidth = 86;
+
+        /**
+         * Spare distance between sample rows:
+         */
+        int gap = 45;
+
+        /**
+         * Am I at the top row?
+         */
+        boolean topRow = true;
+        int extraGap = 0;
+
+        /**
+         * Thickness of line in the grid
+         */
+        int lineThickness = 4;//10;
+        /**
+         * big row height
+         */
+        int bigRowH = 414 - 232;//235, 414
+
+        int initX = 236;
+        int initY = 232;
+
+
+s2a
+
+           /**
+         * height of a sample:
+         */
+        int sylHeight = 58;
+        /**
+         * width of a sample:
+         */
+        int sylWidth = 88; 
+
+        /**
+         * Spare distance between sample rows:
+         */
+        int gap = 57; 
+
+
+        /**
+         * Am I at the top row?
+         */
+        boolean topRow = true;
+        int extraGap = 0;
+
+        /**
+         * Thickness of line in the grid
+         */
+        int lineThickness = 2;//4;//10;
+        /**
+         * big row height
+         */
+//        int bigRowH = gap + 2 * sylHeight + 3 * lineThickness;
+        int bigRowH = 182;
+       
+        int initX = 228;
+        int initY = 201;
+        
+s3a:
+        /**
+         * height of a sample:
+         */
+        int sylHeight = 57; //187-244
+        /**
+         * width of a sample:
+         */
+        int sylWidth = 87; //316-229
+
+        /**
+         * Spare distance between sample rows:
+         */
+        int gap = 57; //365-308
+
+
+        /**
+         * Am I at the top row?
+         */
+        boolean topRow = true;
+        int extraGap = 0;
+
+        /**
+         * Thickness of line in the grid
+         */
+        int lineThickness = 3;//4;//10;
+        
+        /**
+         * big row height
+         */
+        int bigRowH = 369-187;//414 - 232;
+        
+       
+        int initX = 232;
+        int initY = 187;
+
+s4a:
+        /**
+         * height of a sample:
+         */
+        int sylHeight = 57; //187-244
+        /**
+         * width of a sample:
+         */
+        int sylWidth = 88; //316-229
+
+        /**
+         * Spare distance between sample rows:
+         */
+        int gap = 57; //365-308
+
+
+        /**
+         * Am I at the top row?
+         */
+        boolean topRow = true;
+        int extraGap = 0;
+
+        /**
+         * Thickness of line in the grid
+         */
+        int lineThickness = 2;//4;//10;
+
+        /**
+         * big row height
+         */
+        int bigRowH = 365-183;//414 - 232;
+        
+       
+        int initX = 233;
+        int initY = 183;
+
+s5a:
+same is in s4a, except
+        int bigRowH = 181;
+       
+        int initX = 224;
+        int initY = 188;
+
+s6a:
+same as in s5a, except:
+        int initX = 234;
+        int initY = 192;
+
+s7a:
+same as previous, except:
+        int initX = 238;
+        int initY = 185;
+
+s8a:
+same as previous
+
+s1b:
+        /**
+         * height of a sample:
+         */
+        int sylHeight = 58;
+        /**
+         * width of a sample:
+         */
+        int sylWidth = 88; 
+
+        /**
+         * Spare distance between sample rows:
+         */
+        int gap = 57; 
+
+
+        /**
+         * Thickness of line in the grid
+         */
+        int lineThickness = 2;
+
+        /**
+         * big row height
+         */
+        int bigRowH = 182;
+       
+        int initX = 232;
+        int initY = 148;
+s2b:
+same as previous, except:
+        int initX = 232;
+        int initY = 147;
+
+s3b:
+        int initX = 235;
+        int initY = 144;
+
+s4b:
+        int initX = 233;
+        int initY = 150;
+s5b:
+        int initX = 234;
+        int initY = 145;
+s6b:
+        same as previous
+s7b:
+        int initX = 219;
+        int initY = 139;
+s8b:
+        int initX = 236;
+        int initY = 144;
+s9b:
+        int initX = 225;
+        int initY = 137;
+
+
+
