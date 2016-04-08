@@ -102,7 +102,6 @@ public class sampleSet {
 //                    String cons = "";
 //                file.getName().substring(9, file.getName().length()-3)
 //                            sample1B-16X0
-
 //                String[] parts = file.getName().split("X");
 ////                System.out.println(parts[0] + " " + parts[1] + "uuuuuuuuuuuu");
 //                String [] p2 = parts[0].split("-");
@@ -111,9 +110,8 @@ public class sampleSet {
 ////                String [] p3 = parts[1].split(".");
 ////                if(p3.length > 0)
 ////                    System.out.println(p3[1]);
-
 //                cons = file.getName().substring(9, file.getName().indexOf("X"));
-                cons = file.getName().substring(9, file.getName().length()-4);
+                cons = file.getName().substring(9, file.getName().length() - 4);
 //                cons = p2[1];
 //                cons = parts[0].split("-")[1];
 //                System.out.print(file.getName().substring(9, file.getName().indexOf("X")) + " ");
@@ -124,7 +122,6 @@ public class sampleSet {
 
 //                vow = file.getName().substring(vowelNameStartIndex + 1, fileNameLength - 4);
 //                System.out.print(vow + " ");
-
                 if (file.getName().contains("B")) {
                     cons = Integer.toString(Integer.valueOf(cons) + 16);
                 }
@@ -158,95 +155,100 @@ public class sampleSet {
     }
 
     public void cutOffMargins(String noMarginExtension, int colorTreshold) {
-        File[] listOfFiles = directory.listFiles();
-        int pixel;
+        
+            File[] listOfFiles = directory.listFiles();
+            int pixel;
 
-        for (File file : listOfFiles) {
-            if (file.getName().startsWith(noMarginExtension)) {
-                continue;
-            }
-            System.out.print(file.getName());
-            System.out.print(" ");
-            try {
-                boolean rowEmpty = true;
-                boolean colEmpty = true;
-
-                boolean foundTopMargin = false;
-                boolean foundLeftMargin = false;
-                int TMargin = 0;
-                int BMargin = 0;
-                int RMargin = 0;
-                int LMargin = 0;
-                BufferedImage image = ImageIO.read(file);
-                int H = image.getHeight();
-                int W = image.getWidth();
-
-//find top and bottom margins:
-
-                for (int i = 0; i < H; i++) {
-                    for (int j = 0; j < W; j++) {
-                        pixel = image.getRGB(j, i);
-                        if ((pixel & 0xFF) + ((pixel & 0xFF00) >> 8) + ((pixel & 0xFF0000) >> 16) < colorTreshold) {
-                            rowEmpty = false;
-                            foundTopMargin = true;
-                        }
-                    }//end of for, j
-                    if (rowEmpty) {
-//                        System.out.println("E ");
-                        if (!foundTopMargin) {
-                            TMargin++;
-                        } else {
-                            break;
-                        }
-                    }
-                    BMargin++;
-                    rowEmpty = true;
-                }//end of for, i (rows)
-
-///find riht and left margins:
-                for (int j = 0; j < W; j++) {
-                    for (int i = 0; i < H; i++) {
-                        pixel = image.getRGB(j, i);
-                        if ((pixel & 0xFF) + ((pixel & 0xFF00) >> 8) + ((pixel & 0xFF0000) >> 16) < colorTreshold) {
-                            colEmpty = false;
-                            foundLeftMargin = true;
-                        }//end of if
-                    }//end of for, i(rows)
-                    if (colEmpty) {
-                        if (!foundLeftMargin) {
-                            LMargin++;
-                        } else {
-                            break;
-                        }
-                    }
-                    RMargin++;
-                    colEmpty = true;
-                }//end of for, j (cols)
-
-                //save cropped image to new file
-
-                System.out.println(W + " " + RMargin + " " + LMargin);// + " " + ( H - TMargin - LMargin));
-                System.out.println(H + " " + TMargin + " " + BMargin);// + " " + ( H - TMargin - LMargin));
+            for (File file : listOfFiles) {
+                if (file.getName().startsWith(noMarginExtension)) {
+                    continue;
+                }
+                if (!file.getName().endsWith("jpg")) {
+                    continue;
+                }
+                System.out.print(file.getName());
+                System.out.print(" ");
+                try {
+//                    boolean rowEmpty = true;
+//                    boolean colEmpty = true;
+//
+//                    boolean foundTopMargin = false;
+//                    boolean foundLeftMargin = false;
+                    BufferedImage image = ImageIO.read(file);
+                    int TMargin = findTopMargin(image, colorTreshold);//0;
+                    int BMargin = findBottomMargin(image, colorTreshold);//0;
+                    int RMargin = findRightMargin(image, colorTreshold);//0;
+                    int LMargin = findLeftMargin(image, colorTreshold);//0;
+//                    int H = image.getHeight();
+//                    int W = image.getWidth();
+//
+////find top and bottom margins:
+//                    for (int i = 0; i < H; i++) {
+//                        for (int j = 0; j < W; j++) {
+//                            pixel = image.getRGB(j, i);
+//                            if ((pixel & 0xFF) + ((pixel & 0xFF00) >> 8) + ((pixel & 0xFF0000) >> 16) < colorTreshold) {
+//                                rowEmpty = false;
+//                                foundTopMargin = true;
+//                            }
+//                        }//end of for, j
+//                        if (rowEmpty) {
+////                        System.out.println("E ");
+//                            if (!foundTopMargin) {
+//                                TMargin++;
+//                            } else {
+//                                break;
+//                            }
+//                        }
+//                        BMargin++;
+//                        rowEmpty = true;
+//                    }//end of for, i (rows)
+//
+/////find riht and left margins:
+//                    for (int j = 0; j < W; j++) {
+//                        for (int i = 0; i < H; i++) {//check if col is empty:
+//                            pixel = image.getRGB(j, i);
+//                            if ((pixel & 0xFF) + ((pixel & 0xFF00) >> 8) + ((pixel & 0xFF0000) >> 16) < colorTreshold) {
+//                                colEmpty = false;
+//                                foundLeftMargin = true;
+//                                System.out.print(RMargin + " ");
+//                            }//end of if
+//                        }//end of for, i(rows)
+//                        if (colEmpty) {
+//                            if (!foundLeftMargin) {
+//                                LMargin++;
+//                            } else {
+//                                break;
+//                            }
+//                        }
+//                        RMargin++;
+//                        colEmpty = true;
+//                        System.out.println();
+//
+//                    }//end of for, j (cols)
+                        
+                    //save cropped image to new file
+                    System.out.print(image.getWidth() + " R" + RMargin + " L" + LMargin + " w" + (RMargin - LMargin) + " | ");// + " " + ( H - TMargin - LMargin));
+                    System.out.println(image.getHeight() + " B" + BMargin + " T" + TMargin + " h" + (BMargin - TMargin));// + " " + ( H - TMargin - LMargin));
 //                System.out.println((W - RMargin - LMargin ) + " " + ( H - TMargin - LMargin));
 //                System.out.println((W - RMargin - LMargin ) + " " + ( H - TMargin - LMargin));
 //                BufferedImage nextImage = new BufferedImage(W - RMargin - LMargin, H - TMargin - LMargin, image.getType());
-                BufferedImage nextImage = new BufferedImage(RMargin - LMargin, BMargin - TMargin, image.getType());
+                    BufferedImage nextImage = new BufferedImage(RMargin - LMargin, BMargin - TMargin, image.getType());
 
-                for (int y = TMargin; y < BMargin; y++) {
-                    for (int x = LMargin; x < RMargin; x++) {
-                        pixel = image.getRGB(x, y);
-                        nextImage.setRGB(x - LMargin, y - TMargin, pixel);
+                    for (int y = TMargin; y < BMargin; y++) {
+                        for (int x = LMargin; x < RMargin; x++) {
+                            pixel = image.getRGB(x, y);
+                            nextImage.setRGB(x - LMargin, y - TMargin, pixel);
+                        }
                     }
+                    //saveImage(nextImage, outputImageName);
+                    File outputfile = new File(noMarginExtension + file.getName());
+                    ImageIO.write(nextImage, "jpg", outputfile);
+
+                } catch (Exception ex) {
+                    ex.printStackTrace();
                 }
-                //saveImage(nextImage, outputImageName);
-                File outputfile = new File(noMarginExtension + file.getName());
-                ImageIO.write(nextImage, "jpg", outputfile);
-
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }//end of for, file
-
+            }//end of for, file
+        
     }//end of cutOffMargins
 
     public void resizeAll(String prefixToRemove) {
@@ -255,10 +257,14 @@ public class sampleSet {
         int minH = 10000;
         for (File f : files) {
             System.out.println(f.getName());
-            if (!f.getName().startsWith(prefixToRemove))
+            if (!f.getName().startsWith(prefixToRemove)) {
                 continue;
+            }
+
             try {
                 BufferedImage image = ImageIO.read(f);
+                System.out.print(image.getWidth() + " ");
+                System.out.print(image.getHeight() + " ");
                 if (minW > image.getWidth()) {
                     minW = image.getWidth();
                 }
@@ -269,18 +275,22 @@ public class sampleSet {
                 ex.printStackTrace();
             }
         }//end of for, file
+//        System.out.println("minW: " + minW);
+//        System.out.println("minH: " + minH);
+        System.exit(0);
         for (File f : files) {
-            if(! f.getName().startsWith(prefixToRemove))
+            if (!f.getName().startsWith(prefixToRemove)) {
                 continue;
+            }
             try {
-                            System.out.println(f.getName());
+                System.out.println(f.getName());
 
                 BufferedImage image = ImageIO.read(f);
                 BufferedImage newImage = resize(image, minW, minH);
                 String oldname = f.getName();
                 int L = oldname.length();
-                File outputfile = new File("resized" +
-                        f.getName().substring(prefixToRemove.length()-1, L));
+                File outputfile = new File("resized"
+                        + f.getName().substring(prefixToRemove.length() - 1, L));
                 ImageIO.write(newImage, "jpg", outputfile);
             } catch (Exception ex) {
                 ex.printStackTrace();
@@ -292,8 +302,96 @@ public class sampleSet {
     private BufferedImage resize(BufferedImage image, int newWidth, int newHeight) {
         BufferedImage res = new BufferedImage(newWidth, newHeight, image.getType());
         Graphics2D g = res.createGraphics();
-        g.drawImage(image, 0, 0, newWidth, newHeight, null); 
+        g.drawImage(image, 0, 0, newWidth, newHeight, null);
         g.dispose();
         return res;
+    }
+
+//    private int[] findMargins(BufferedImage img){
+//    
+//    }
+    private int findTopMargin(BufferedImage image, int colorTreshold) {
+        int H = image.getHeight();
+        int W = image.getWidth();
+        int pixel;
+        int topMargin = 0;
+        for (int i = 0; i < H; i++) {
+            for (int j = 0; j < W; j++) {
+                pixel = image.getRGB(j, i);
+                if ((pixel & 0xFF) + ((pixel & 0xFF00) >> 8) + ((pixel & 0xFF0000) >> 16) < colorTreshold) {
+                    //break;
+                    //System.out.println(topMargin + "X");
+                    return topMargin;
+                } else {
+                    topMargin++;
+                }
+            }//end of for, j
+            //System.out.println(topMargin + "XXX " );
+            topMargin = 0;
+        }//end of for, i (rows)
+        
+        return topMargin;
+    }
+
+    private int findBottomMargin(BufferedImage image, int colorTreshold) {
+        int H = image.getHeight();
+        int W = image.getWidth();
+        int bottomMargin = H;
+        int pixel;
+        for (int i = H-1; i >= 0; i--) {
+            for (int j = 0; j < W; j++) {
+                pixel = image.getRGB(j, i);
+                if ((pixel & 0xFF) + ((pixel & 0xFF00) >> 8) + ((pixel & 0xFF0000) >> 16) < colorTreshold) {
+                    //break;
+                    return bottomMargin;
+                } else {
+                    bottomMargin--;
+                }
+            }//end of for, j
+            bottomMargin = H;
+        }//end of for, i (rows)
+        return bottomMargin;
+    }
+
+    private int findLeftMargin(BufferedImage image, int colorTreshold) {
+        int H = image.getHeight();
+        int W = image.getWidth();
+        int leftMargin = 0;//image.getHeight();
+        int pixel;
+        for (int j = 0; j < W; j++) {
+            for (int i = 0; i < H; i++) {
+                pixel = image.getRGB(j, i);
+                if ((pixel & 0xFF) + ((pixel & 0xFF00) >> 8) + ((pixel & 0xFF0000) >> 16) < colorTreshold) {
+//                    break;
+                    return leftMargin;
+                } else {
+//                    System.out.print(leftMargin + "X ");
+                    leftMargin++;
+                }
+            }//end of for, j
+//            System.out.println(leftMargin +"XXX ");
+            leftMargin = 0;
+        }//end of for, i (rows)
+        return leftMargin;
+    }
+
+    private int findRightMargin(BufferedImage image, int colorTreshold) {
+        int H = image.getHeight();
+        int W = image.getWidth();
+        int rightMargin = W;//image.getHeight();
+        int pixel;
+        for (int j = W-1; j >= 0 ; j--) {
+            for (int i = 0; i < H; i++) {
+                pixel = image.getRGB(j, i);
+                if ((pixel & 0xFF) + ((pixel & 0xFF00) >> 8) + ((pixel & 0xFF0000) >> 16) < colorTreshold) {
+//                    break;
+                    return rightMargin;
+                } else {
+                    rightMargin--;
+                }
+            }//end of for, j
+            rightMargin = W;
+        }//end of for, i (rows)
+        return rightMargin;
     }
 }//end of class sampleSet
