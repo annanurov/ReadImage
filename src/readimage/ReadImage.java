@@ -30,40 +30,68 @@ public class ReadImage {
 //            }
 //        }
         
-        useSampleSet();
 //        makeARFFfile("binaryPixelst80");
 //        makeARFFfile("binaryPixelst90");
 //        makeARFFfile("binaryPixelst95");
 //        makeARFFfile("binaryPixelst98");
         
-//        cutMargins("KH-cons310316", "CUT");
+//        cutMargins("Lim", "CUT", 0xFF * 3 - 1);
+//        cutMargins("KhmerLetter", "CUT", 0xFF - 1);
+//        cutMargins("samples3\\CUTsamples3", "CUT");
+//        resizeAllSamples("samples18", "CUT");
         
-        
-        
-        
+    if(false){
+        for(int i = 10; i <=18; i++){
+            String directory = "samples" + Integer.toString(i);
+            if (i == 15 || i == 18)
+                useSampleSet( directory, 0xFF  - 1);
+            else
+                useSampleSet( directory, 0xFF * 3 - 1);
+        }
+    }
+    
+    if (true){
+        File current = new File(".");
+        File [] files = current.listFiles();
+        for(File file : files){
+            if(! file.getName().startsWith("samples") || 
+                    file.isDirectory() || 
+                    file.getName().endsWith(".arff"))
+                continue;
+            
+            makeARFFfile(file.getName());
+        }
+    }
     }//end of main
 
     
     
-    public static void cutMargins(String dir, String name){
+    public static void cutMargins(String dir, String cutMarginPrefix, int colorTreshold){
+        //default: colorTreshold = 0xFF * 3 - 1;
         sampleSet bukvy;
-//        bukvy = new sampleSet(dir);
-//        bukvy.cutOffMargins(name, 0xFF * 3 - 1);
-    
-        bukvy = new sampleSet("KH-cons310316\\Cut");
-        bukvy.resizeAll("CUT");
+        bukvy = new sampleSet(dir);
+        bukvy.cutOffMargins(cutMarginPrefix, 0xFF * 3 - 1, dir, "\\");
     }//end of cutMargins
     
+    public static void resizeAllSamples(String dir, String cutMarginPrefix){
+        sampleSet bukvy = new sampleSet(dir);
+//        bukvy.resizeAll(dir);
+        bukvy.resizeAll(cutMarginPrefix, "\\");
+        
+    }//end of resizeAllSamples
     
     
-    public static void useSampleSet() {
+    public static void useSampleSet(String dirname, int colorThreshold ) {
         sampleSet bukvy;
-        bukvy = new sampleSet("resized");
-        int batchSize = 5;
-        int pixelThreshold = (int)(batchSize * batchSize * 0.8);//20;
-        int colorThreshold = 700;
-        String sampleFile = "resized" + Integer.toString(batchSize)+ ".txt" ;
-        bukvy.convertSamplesToText(colorThreshold, pixelThreshold, sampleFile, batchSize);
+        bukvy = new sampleSet(dirname);
+        int [] batchSizes = new int[]{1, 5, 10};
+        //int colorThreshold = 0xFF * 3 - 1;//700;
+        for (int batchSize : batchSizes){
+            int pixelThreshold = (int)(batchSize * batchSize * 0.75);//20;
+            bukvy.convertSamplesToText(colorThreshold, pixelThreshold, dirname, batchSize);
+        }
+//        String sampleFile = "dirname" + Integer.toString(batchSize)+ ".txt" ;
+//        bukvy.convertSamplesToText(colorThreshold, pixelThreshold, sampleFile, batchSize);
 //        //        bukvy = new sampleSet("KH-backup120316\\s1a");
 //        //        bukvy.convertSamplesToText("binaryPixels1A");
 //
@@ -143,44 +171,44 @@ public class ReadImage {
     public static void makeARFFfile(String dataFileName) throws Exception {
         //        File inputFile = new File(dataFile + ".txt");
         File inputFile = new File(dataFileName);
-        makeARFFfile(inputFile);
-    }//end of makeARFFfile(String)
-
-public static void makeARFFfile(File dataFile) throws Exception {
-//        File inputFile = new File(dataFile + ".txt");
-//        File inputFile = new File(dataFile);
-        Scanner input = new Scanner(dataFile);
-
-        File outputFile = new File(dataFile + ".arff");
+        Scanner input = new Scanner(inputFile);
+        
+        File outputFile;
+        if (dataFileName.endsWith(".txt"))
+            outputFile = new File(dataFileName.substring(0, dataFileName.length() - 4) + ".arff");
+        else
+            outputFile = new File(dataFileName + ".arff");
+        
         PrintWriter pen = new PrintWriter(outputFile);
 
         pen.write("@RELATION KHletters");
 //        pen.write(dataFile.substring(13, 15));
-        pen.write(dataFile.getName().substring(13, 15));
+//        pen.write(dataFile.getName().substring(13, 15));
+        pen.write(dataFileName.substring(0, dataFileName.length() - 4));
         pen.write("\n\n");
         ArrayList consonants = new ArrayList();
         ArrayList vowels = new ArrayList();
 
-        //keep track og how many pixels:
+        //count how many pixels:
         int pixels = 0;
-
+        int hasVows = 0;//1 if data has vowels
         String y;
         int L;
         while (input.hasNext()) {
             String line = input.nextLine();
             String[] items = line.split(" ");
             L = items.length;
-            if (pixels < L - 2) {
-                pixels = L - 2;
+            if (pixels < L - 1 - hasVows) {
+                pixels = L - 1 - hasVows;
             }
-            y = items[L - 2];
+            y = items[L - 1 - hasVows];
             if (!(consonants.contains(y))) {
                 consonants.add(y);
             }
-            y = items[ L - 1];
-            if (!(vowels.contains(y))) {
-                vowels.add(y);
-            }
+//            y = items[ L - hasVows];
+//            if (!(vowels.contains(y))) {
+//                vowels.add(y);
+//            }
         }
         input.close();
 
@@ -198,17 +226,19 @@ public static void makeARFFfile(File dataFile) throws Exception {
         pen.write(consonants.get(consonants.size() - 1).toString());
         pen.write("}\n");
         
-        pen.write("@ATTRIBUTE vowel\t{");
-        for (int i = 0; i < vowels.size() - 1; i++) {
-            pen.write(vowels.get(i) + ",");
-        }
+        if(hasVows > 0){
+            pen.write("@ATTRIBUTE vowel\t{");
+            for (int i = 0; i < vowels.size() - 1; i++) {
+                pen.write(vowels.get(i) + ",");
+            }
 
-        pen.write(vowels.get(vowels.size() - 1).toString());
-        pen.write("}\n\n");
+            pen.write(vowels.get(vowels.size() - 1).toString());
+            pen.write("}\n\n");
+        }
         
         //reopen the oginial data file:
 //        input = new Scanner(inputFile);
-        input = new Scanner(dataFile);
+        input = new Scanner(inputFile);
 
         pen.write("@DATA\n");
         String line;
