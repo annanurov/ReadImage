@@ -321,7 +321,8 @@ public class sampleSet {
                 String oldname = f.getName(); //will start with cutPrefix
                 int L = oldname.length();
                 File outputfile = new File(this.directory.getName() + separator + "RESIZED"
-                        + f.getName().substring(cutPrefix.length() - 1, L));
+                        + f.getName().substring(cutPrefix.length() , L));
+//                        + f.getName().substring(cutPrefix.length() - 1, L));
                 ImageIO.write(newImage, "jpg", outputfile);
             } catch (Exception ex) {
                 ex.printStackTrace();

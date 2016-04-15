@@ -38,7 +38,9 @@ public class ReadImage {
 //        cutMargins("Lim", "CUT", 0xFF * 3 - 1);
 //        cutMargins("KhmerLetter", "CUT", 0xFF - 1);
 //        cutMargins("samples3\\CUTsamples3", "CUT");
-//        resizeAllSamples("samples18", "CUT");
+
+
+//        resizeAllSamples("allcut", "CUT");
         
     if(false){
         for(int i = 10; i <=18; i++){
@@ -50,7 +52,11 @@ public class ReadImage {
         }
     }
     
-    if (true){
+    if(false){
+        useSampleSet( "allcut", 0xFF  - 1);
+    }
+    
+    if (false){
         File current = new File(".");
         File [] files = current.listFiles();
         for(File file : files){
@@ -61,6 +67,12 @@ public class ReadImage {
             
             makeARFFfile(file.getName());
         }
+    }
+    
+    if (true){
+        makeARFFfile("allcutt0b1.txt");
+        makeARFFfile("allcutt18b5.txt");
+        makeARFFfile("allcutt75b10.txt");
     }
     }//end of main
 
